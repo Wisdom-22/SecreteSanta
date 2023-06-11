@@ -1,0 +1,1 @@
+class ElectronicsList : ArrayList<ElectronicsListItem>()

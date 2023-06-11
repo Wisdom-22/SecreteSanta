@@ -1,0 +1,296 @@
+<?php
+//header('Content-Type: application/json');
+//if(!empty($_POST['username']) ){
+	$username = "rebecca";  //$_POST['username'];
+	
+	$con = mysqli_connect('localhost', 'root', '', 'secretesantadatabase');
+	
+	//check to see if the secrete_santa column has been is filled or an empty string
+	$sqlSecreteSanta = "select secrete_santa from group_table where users_name = '$username'";
+	$resultSecreteSanta = mysqli_query($con, $sqlSecreteSanta);
+	$arySecreteSanta = array();
+	$checkSecreteSanta = "";
+	
+	if(mysqli_num_rows($resultSecreteSanta) != 0){
+		$i = 0;
+		while($row = mysqli_fetch_assoc($resultSecreteSanta)){
+			$arySecreteSanta[$i] = $row;
+			//echo "{$row['data']} <br>";
+			//$Ssanta = $row["data"];
+			$i++;
+		}
+		
+		foreach($arySecreteSanta as $category => $category_array){
+				$checkSecreteSanta = $category_array['secrete_santa'];
+				
+		}
+		
+		//echo "<br>";
+		echo json_encode($arySecreteSanta, JSON_PRETTY_PRINT);
+		
+	}
+	
+	//if it an empty string do what is in the if statement
+	if($checkSecreteSanta == ""){
+		$sqlSelectGroupName = "select group_name from group_table where users_name = '$username'";
+		$resultSelectGroupName = mysqli_query($con, $sqlSelectGroupName);
+		$arySelectGroupName = array();
+		$checkGroupName = "";
+	
+		if(mysqli_num_rows($resultSelectGroupName) != 0){
+			$i = 0;
+			while($row = mysqli_fetch_assoc($resultSelectGroupName)){
+				$arySelectGroupName[$i] = $row;
+				
+				$i++;
+			}
+			
+			foreach($arySelectGroupName as $category => $category_array){
+					$checkGroupName = $category_array['group_name'];
+			}
+			
+			//echo $checkGroupName ."<br>";
+			//echo json_encode($arySelectGroupName, JSON_PRETTY_PRINT);
+		}
+	
+		$sqlSelectUsers = "select users_name from group_table where group_name = '$checkGroupName'";
+		$resultSelectUsers = mysqli_query($con, $sqlSelectUsers);
+		$arySelectUsersname = array();
+		$checkSelectUsersname = "";
+		$ary = array();
+		
+		//select all names from the secrete_santa column to make sure when you are selecting a secrete_santa that is not in the column
+		$sqlSelectSecreteSanta = "select secrete_santa from group_table where group_name = '$checkGroupName'";
+		$resultSelectSecreteSanta = mysqli_query($con, $sqlSelectSecreteSanta);
+		$arySelectSecreteSanta = array();
+		$checkSecreteSanta = "";
+		$arySanta = array();
+		
+		
+		if(mysqli_num_rows($resultSelectUsers) != 0){
+			$i = 0;
+			while($row = mysqli_fetch_assoc($resultSelectUsers)){
+				$arySelectUsersname[$i] = $row;
+				
+				$i++;
+			}
+		
+			foreach($arySelectUsersname as $category => $category_array){
+					$checkSelectUsersname = $category_array['users_name'];
+					$ary[] = $checkSelectUsersname;
+					
+			}
+		}	
+			if(mysqli_num_rows($resultSelectSecreteSanta) != 0){
+				$i = 0;
+				while($row = mysqli_fetch_assoc($resultSelectSecreteSanta)){
+					$arySelectSecreteSanta[$i] = $row;
+					
+					$i++;
+				}
+				
+				foreach($arySelectSecreteSanta as $category => $category_array){
+						$checkSecreteSanta = $category_array['secrete_santa'];
+						$arySanta[] = $checkSecreteSanta;
+						
+				}
+			}
+			
+			//echo "<br>";
+			//echo json_encode($arySelectUsersname, JSON_PRETTY_PRINT);
+			
+			//echo "<br>";
+			//echo json_encode($ary, JSON_PRETTY_PRINT);
+			
+			//echo "<br>";
+			//echo count($ary);
+			//echo "<br>";
+			$selectedUser = "";
+			$isChecked = false;
+			$index = 0;
+			$max = count($ary) - 1;
+			echo "+++++++-----".$max."++++++------";
+			$counter = 0;
+			$limit = count($ary)-1;
+			while($isChecked == false){
+				$count = count($ary) - 1;
+				$id = rand(0, $count);
+					
+				$selectedUser = $ary[$id];
+				//echo "<br>";
+				//echo $selectedUser;
+				if($selectedUser != $username){
+					while($counter <  $limit){
+						if($selectedUser != $arySanta[$counter]){
+							
+						}
+						$counter++;
+					}
+					$isChecked = true;
+				}
+				
+				
+			}
+				//$sql = "update crud_table set data = '".$data."' where id = ". $id;
+				$sql = "update group_table set secrete_santa = '".$selectedUser."' where users_name = '$username'";		
+				$result = mysqli_query($con, $sql);
+		
+	
+		$sqlSecreteSanta = "select secrete_santa from group_table where users_name = '$username'";
+		$resultSecreteSanta = mysqli_query($con, $sqlSecreteSanta);
+		$arySecreteSanta = array();
+		$checkSecreteSanta = "";
+		
+		if(mysqli_num_rows($resultSecreteSanta) != 0){
+			$i = 0;
+			while($row = mysqli_fetch_assoc($resultSecreteSanta)){
+				$arySecreteSanta[$i] = $row;
+
+				$i++;
+			}
+			
+			foreach($arySecreteSanta as $category => $category_array){
+				$arySecreteSanta = $category_array['secrete_santa'];
+					
+			}
+			
+			//echo "<br>";
+			echo json_encode($arySecreteSanta, JSON_PRETTY_PRINT);
+		}
+		
+		
+	}else{
+	
+		$sqlSelectGroupName = "select group_name from group_table where users_name = '$username'";
+		$resultSelectGroupName = mysqli_query($con, $sqlSelectGroupName);
+		$arySelectGroupName = array();
+		$checkGroupName = "";
+		
+		if(mysqli_num_rows($resultSelectGroupName) != 0){
+			$i = 0;
+			while($row = mysqli_fetch_assoc($resultSelectGroupName)){
+				$arySelectGroupName[$i] = $row;
+				
+				$i++;
+			}
+			
+			foreach($arySelectGroupName as $category => $category_array){
+				$checkGroupName = $category_array['group_name'];
+			}
+			
+			//echo $checkGroupName ."<br>";
+			//echo json_encode($arySelectGroupName, JSON_PRETTY_PRINT);
+		}
+	
+		$sqlSelectUsers = "select users_name from group_table where group_name = '$checkGroupName'";
+		$resultSelectUsers = mysqli_query($con, $sqlSelectUsers);
+		$arySelectUsersname = array();
+		$checkSelectUsersname = "";
+		$ary = array();
+		
+		//select all names from the secrete_santa column to make sure when you are selecting a secrete_santa that is not in the column
+		$sqlSelectSecreteSanta = "select secrete_santa from group_table where group_name = '$checkGroupName'";
+		$resultSelectSecreteSanta = mysqli_query($con, $sqlSelectSecreteSanta);
+		$arySelectSecreteSanta = array();
+		$checkSecreteSanta = "";
+		$arySanta = array();
+
+		if(mysqli_num_rows($resultSelectUsers) != 0){
+			$i = 0;
+			while($row = mysqli_fetch_assoc($resultSelectUsers)){
+				$arySelectUsersname[$i] = $row;
+				
+				$i++;
+			}
+			
+			foreach($arySelectUsersname as $category => $category_array){
+				$checkSelectUsersname = $category_array['users_name'];
+				$ary[] = $checkSelectUsersname;
+					
+			}
+			
+		}
+
+		if(mysqli_num_rows($resultSelectSecreteSanta) != 0){
+			$i = 0;
+			while($row = mysqli_fetch_assoc($resultSelectSecreteSanta)){
+				$arySelectSecreteSanta[$i] = $row;
+					
+				$i++;
+			}
+				
+			foreach($arySelectSecreteSanta as $category => $category_array){
+				$checkSecreteSanta = $category_array['secrete_santa'];
+				$arySanta[] = $checkSecreteSanta;
+					
+			}
+		}
+			
+		
+		$selectedUser = "";
+		$isChecked = false;
+		$index = 0;
+		$max = count($ary) - 1;
+		echo "+++++++-----".$max."++++++------";
+		$counter = 0;
+		$limit = count($ary)-1;
+		while($isChecked == false){
+			$count = count($ary) - 1;
+			$id = rand(0, $count);
+				
+			$selectedUser = $ary[$id];
+			//echo "<br>";
+			//echo $selectedUser;
+			if($selectedUser != $username){
+				while($counter <  $limit){
+					if($selectedUser != $arySanta[$counter]){
+						
+					}
+					$counter++;
+				}
+				$isChecked = true;
+			}
+			
+			
+		}
+			
+			
+		//$sql = "update crud_table set data = '".$data."' where id = ". $id;
+		$sql = "update group_table set secrete_santa = '".$selectedUser."' where users_name = '$username'";		
+		$result = mysqli_query($con, $sql);
+		
+		$sqlSecreteSanta = "select secrete_santa from group_table where users_name = '$username'";
+		$resultSecreteSanta = mysqli_query($con, $sqlSecreteSanta);
+		$arySecreteSanta = array();
+		$checkSecreteSanta = "";
+	
+		if(mysqli_num_rows($resultSecreteSanta) != 0){
+			$i = 0;
+			while($row = mysqli_fetch_assoc($resultSecreteSanta)){
+				$arySecreteSanta[$i] = $row;
+				
+				$i++;
+			}
+			
+			foreach($arySecreteSanta as $category => $category_array){
+				$arySecreteSanta = $category_array['secrete_santa'];
+					
+			}
+			
+			echo "<br>";
+			//echo json_encode($arySecreteSanta, JSON_PRETTY_PRINT);
+		}
+	
+	
+	
+	}
+	
+	
+	
+	
+	
+	
+//}
+	
+	
+?>

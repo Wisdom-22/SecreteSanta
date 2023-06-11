@@ -1,0 +1,1 @@
+class MyTestData : ArrayList<MyTestDataItem>()
